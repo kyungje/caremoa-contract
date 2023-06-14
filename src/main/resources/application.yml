@@ -36,9 +36,10 @@ spring:
       bindings:
         producer-out-0:
           destination: contract
+          content-type: application/json
         consumer-in-0:
           destination: contract
-        #          content-type: application/json
+          content-type: application/json
 
 server:
   port: 8080

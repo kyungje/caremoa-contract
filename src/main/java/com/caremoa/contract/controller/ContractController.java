@@ -4,10 +4,7 @@ import com.caremoa.contract.dto.ContractDto;
 import com.caremoa.contract.service.ContractService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
 
@@ -26,4 +23,11 @@ public class ContractController {
         return contractInfo;
     }
 
+    @PutMapping("/contract/accept")
+    public ContractDto.ContractRes endContract(@RequestBody ContractDto.ContractReq request) {
+
+        ContractDto.ContractRes contractInfo = contractService.acceptContract(request);
+
+        return contractInfo;
+    }
 }
