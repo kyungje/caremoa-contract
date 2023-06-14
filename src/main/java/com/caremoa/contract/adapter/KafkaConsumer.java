@@ -18,7 +18,6 @@ public class KafkaConsumer {
 
     @Bean
     Consumer<Map<String, Object>> consumer() {
-        System.out.println("0");
 
         return mapData -> {
             ObjectMapper mapper = new ObjectMapper();
