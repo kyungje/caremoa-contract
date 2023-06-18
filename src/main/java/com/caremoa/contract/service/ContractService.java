@@ -4,15 +4,20 @@ import com.caremoa.contract.adapter.ContractAccepted;
 import com.caremoa.contract.adapter.ContractEnded;
 import com.caremoa.contract.adapter.KafkaProducer;
 import com.caremoa.contract.domain.Contract;
+import com.caremoa.contract.domain.enum4dom.ContractStatus;
 import com.caremoa.contract.dto.ContractDto;
+import com.caremoa.contract.feign.PaymentFeign;
 import com.caremoa.contract.repository.ContractRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.stream.function.StreamBridge;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.net.http.HttpResponse;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -21,24 +26,81 @@ import java.util.Optional;
 public class ContractService {
     private final ContractRepository contractRepository;
     private final KafkaProducer kafkaProducer;
+    private final PaymentFeign paymentFeign;
 
-    public ContractDto.ContractRes findContractInfo(ContractDto.ContractReq condition){
+    public List<ContractDto.ContractRes> findContractAll(){
+
+        List<Contract> contractList = contractRepository.findAll();
+
+        return contractList.stream().map(data -> toContractRes(data)).collect(Collectors.toList());
+    }
+
+    public Contract findContractById(ContractDto.ContractReq condition){
 
         Contract contract = contractRepository.findById(condition.getContractId())
                 .orElseThrow(()->new RuntimeException("Can't find the contract Id"));
 
-        return toContractRes(contract);
+        return contract;
     }
 
-    public ContractDto.ContractRes acceptContract(ContractDto.ContractReq condition){
-        ContractAccepted contractAccepted = ContractAccepted.builder()
-                .contractId(condition.getContractId())
-                .build();
+    @Transactional
+    public ResponseEntity acceptContract(ContractDto.ContractReq condition){
+        Contract contract = findContractById(condition);
 
-        kafkaProducer.sendMessage(contractAccepted);
+        contract.changeContractStatus(condition.getContractStatus());
 
-        return ContractDto.ContractRes.builder()
-                .contractId(condition.getContractId())
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity rejectContract(ContractDto.ContractReq condition){
+        Contract contract = findContractById(condition);
+
+        contract.changeContractStatus(condition.getContractStatus());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity payContract(ContractDto.ContractReq condition){
+        Contract contract = findContractById(condition);
+
+        //결제 모듈 호출 feign
+        paymentFeign.postPayment(toContractRes(contract));
+
+        contract.changeContractStatus(condition.getContractStatus());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity endContract(ContractDto.ContractReq condition){
+
+        Contract contract = findContractById(condition);
+
+        kafkaProducer.sendMessage(toContractEnded(contract));
+
+        contract.changeContractStatus(condition.getContractStatus());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Transactional
+    public void saveContract(Contract contract){
+        contractRepository.save(contract);
+    }
+
+    private ContractEnded toContractEnded(Contract contract){
+        return ContractEnded.builder()
+                .contractId(contract.getId())
+                .memberId(contract.getMemberId())
+                .memberName(contract.getMemberName())
+                .helperId(contract.getHelperId())
+                .helperName(contract.getHelperName())
+                .helperJobType(contract.getHelperJobType())
+                .targetName(contract.getTargetName())
+                .contractStatus(ContractStatus.COMPLETED)
+                .careRange(contract.getCareRange())
                 .build();
     }
 
@@ -51,6 +113,9 @@ public class ContractService {
                 .helperName(contract.getHelperName())
                 .helperJobType(contract.getHelperJobType())
                 .targetName(contract.getTargetName())
+                .contractStatus(contract.getContractStatus())
+                .deleteYn(contract.getDeleteYn())
+                .careRange(contract.getCareRange())
                 .build();
     }
 

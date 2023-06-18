@@ -38,7 +38,7 @@ public class initDB {
 
         public void dbInit() throws Exception {
 
-            Contract contract = Contract.builder()
+            Contract contract1 = Contract.builder()
                     .memberId(1L)
                     .memberName("testMember")
                     .helperId(1L)
@@ -54,7 +54,25 @@ public class initDB {
                     .helperPhoneNumber("testHelperPhone")
                     .build();
 
-            entityManager.persist(contract);
+            entityManager.persist(contract1);
+
+            Contract contract2 = Contract.builder()
+                    .memberId(2L)
+                    .memberName("testMember2")
+                    .helperId(2L)
+                    .helperName("testHelper2")
+                    .helperJobType("1Type2")
+                    .targetName("testTarget2")
+                    .expense(2000L)
+                    .contractStatus(ContractStatus.CREATED)
+                    .deleteYn(DeleteYn.N)
+                    .location("testLoc2")
+                    .careRange("testCare2")
+                    .memberPhoneNumber("testMemberPhone2")
+                    .helperPhoneNumber("testHelperPhone2")
+                    .build();
+
+            entityManager.persist(contract2);
 
         }
     }

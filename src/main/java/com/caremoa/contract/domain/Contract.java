@@ -48,9 +48,6 @@ public class Contract {
 
     private String helperPhoneNumber;
 
-    @OneToMany(mappedBy = "contract")
-    private List<ContractDetail> contractDetailList = new ArrayList<>();
-
     @Builder
     public Contract(Long memberId, String memberName, Long helperId, String helperName, String helperJobType, String targetName, Long expense, ContractStatus contractStatus, DeleteYn deleteYn, String location, String careRange, String memberPhoneNumber, String helperPhoneNumber) {
         this.memberId = memberId;
@@ -67,4 +64,13 @@ public class Contract {
         this.memberPhoneNumber = memberPhoneNumber;
         this.helperPhoneNumber = helperPhoneNumber;
     }
+
+    public void changeContractStatus(ContractStatus contractStatus){
+        this.contractStatus = contractStatus;
+    }
+
+    public void changeDeleteYn(DeleteYn deleteYn){
+        this.deleteYn = deleteYn;
+    }
+
 }
