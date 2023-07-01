@@ -7,12 +7,14 @@ import org.springframework.util.StringUtils;
 @Getter
 @RequiredArgsConstructor
 public enum ContractStatus {
-    CREATED("생성됨")
+    CREATED("생성")
     , SIGNED("서명")
-    , HOLED("보류됨")
-    , REJECTED("거부됨")
-    , COMPLETED("완료됨")
-    , CANCELED("취소됨");
+    , HOLED("보류")
+    , PAID("결제")
+    , REJECTED("거부")
+    , CLAIMED("클레임")
+    , COMPLETED("완료")
+    , CANCELED("취소");
 
     private final String description;
 

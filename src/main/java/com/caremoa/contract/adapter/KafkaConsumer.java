@@ -42,9 +42,9 @@ public class KafkaConsumer {
 
             switch (mapData.get("eventType").toString()) {
                 /* Example
-                {"eventType":"ContractCompleted","memberId":3,"memberName":"testMember3","helperId":3,"helperName":"testHelper3","helperJobType":"1Type3","targetName":"testTarget2","careRange":"testCare2","expense":1000,"location":"서울","helperPhoneNumber":"1234","memberPhoneNumber":"2345"}
+                {"eventType":"ContractAccepted","memberId":3,"memberName":"testMember3","helperId":3,"helperName":"testHelper3","helperJobType":"1Type3","targetName":"testTarget2","careRange":"testCare2","expense":1000,"location":"서울","helperPhoneNumber":"1234","memberPhoneNumber":"2345"}
                  */
-                case "ContractCompleted": // 계약이 완료될 때마다 반영 점수
+                case "ContractAccepted":
                     ContractAccepted contractAccepted = mapper.convertValue(mapData, ContractAccepted.class);
                     log.info("contractAccepted : {}", contractAccepted.toString());
                     contractService.saveContract(toContract(contractAccepted));

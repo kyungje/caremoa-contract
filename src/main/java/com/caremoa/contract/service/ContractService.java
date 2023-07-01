@@ -1,7 +1,6 @@
 package com.caremoa.contract.service;
 
-import com.caremoa.contract.adapter.ContractAccepted;
-import com.caremoa.contract.adapter.ContractEnded;
+import com.caremoa.contract.adapter.ContractCompleted;
 import com.caremoa.contract.adapter.KafkaProducer;
 import com.caremoa.contract.domain.Contract;
 import com.caremoa.contract.domain.enum4dom.ContractStatus;
@@ -15,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,16 +60,27 @@ public class ContractService {
     }
 
     @Transactional
-    public ResponseEntity payContract(ContractDto.ContractReq condition){
+    public ResponseEntity claimContract(ContractDto.ContractReq condition){
         Contract contract = findContractById(condition);
-
-        //결제 모듈 호출 feign
-        paymentFeign.postPayment(toContractRes(contract));
 
         contract.changeContractStatus(condition.getContractStatus());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Transactional
+    public ResponseEntity payContract(ContractDto.ContractReq condition){
+        Contract contract = findContractById(condition);
+
+        //결제 모듈 호출 feign
+        ResponseEntity responseEntity = paymentFeign.postPayment(toPaymentReq(contract));
+        log.info("payment responseEntity", responseEntity);
+        contract.changeContractStatus(condition.getContractStatus());
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 
     @Transactional
     public ResponseEntity endContract(ContractDto.ContractReq condition){
@@ -90,8 +99,8 @@ public class ContractService {
         contractRepository.save(contract);
     }
 
-    private ContractEnded toContractEnded(Contract contract){
-        return ContractEnded.builder()
+    private ContractCompleted toContractEnded(Contract contract){
+        return ContractCompleted.builder()
                 .contractId(contract.getId())
                 .memberId(contract.getMemberId())
                 .memberName(contract.getMemberName())
@@ -116,6 +125,17 @@ public class ContractService {
                 .contractStatus(contract.getContractStatus())
                 .deleteYn(contract.getDeleteYn())
                 .careRange(contract.getCareRange())
+                .build();
+    }
+
+    private ContractDto.PaymentReq toPaymentReq(Contract contract) {
+        return ContractDto.PaymentReq.builder()
+                .contractId(contract.getId())
+                .memberId(contract.getMemberId())
+                .memberName(contract.getMemberName())
+                .helperId(contract.getHelperId())
+                .helperName(contract.getHelperName())
+                .requestAmount(contract.getExpense())
                 .build();
     }
 

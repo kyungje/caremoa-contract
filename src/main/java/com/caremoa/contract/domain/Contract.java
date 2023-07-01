@@ -19,19 +19,12 @@ public class Contract {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "contract_id")
     private Long id;
-
     private Long memberId;
-
     private String memberName;
-
     private Long helperId;
-
     private String helperName;
-
     private String helperJobType;
-
     private String targetName;
-
     private Long expense;
 
     @Enumerated(EnumType.STRING)
@@ -41,9 +34,7 @@ public class Contract {
     private DeleteYn deleteYn;
 
     private String location;
-
     private String careRange;
-
     private String memberPhoneNumber;
 
     private String helperPhoneNumber;

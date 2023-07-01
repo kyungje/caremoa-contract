@@ -76,4 +76,25 @@ public class ContractDto {
             this.careRange = careRange;
         }
     }
+
+    @Data
+    @NoArgsConstructor
+    public static class PaymentReq {
+        Long contractId;
+        Long memberId;
+        String memberName;
+        Long helperId;
+        String helperName;
+        Long requestAmount;
+
+        @Builder
+        public PaymentReq(Long contractId, Long memberId, String memberName, Long helperId, String helperName, Long requestAmount) {
+            this.contractId = contractId;
+            this.memberId = memberId;
+            this.memberName = memberName;
+            this.helperId = helperId;
+            this.helperName = helperName;
+            this.requestAmount = requestAmount;
+        }
+    }
 }

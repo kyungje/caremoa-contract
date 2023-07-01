@@ -44,6 +44,12 @@ public class ContractController {
         return contractService.payContract(request);
     }
 
+    @PutMapping("/contract/claim")
+    public ResponseEntity claimContract(@RequestBody ContractDto.ContractReq request) {
+
+        return contractService.claimContract(request);
+    }
+
     @PutMapping("/contract/end")
     public ResponseEntity endContract(@RequestBody ContractDto.ContractReq request) {
 

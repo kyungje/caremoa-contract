@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @FeignClient(name = "paymentFeign", url = "${prop.feign.url}")
 public interface PaymentFeign {
-    @PostMapping(produces = "application/json", consumes = "application/json")
-    ResponseEntity postPayment(ContractDto.ContractRes contractRes);
+    @PostMapping(value = "/payments", produces = "application/json", consumes = "application/json")
+    ResponseEntity postPayment(ContractDto.PaymentReq paymentReq);
 }

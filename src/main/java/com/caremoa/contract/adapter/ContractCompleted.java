@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper=false)
 @NoArgsConstructor
-public class ContractEnded extends AbstractEvent{
+public class ContractCompleted extends AbstractEvent{
     private Long contractId; // -- ID\
     private Long memberId;
     private String memberName;
@@ -21,7 +21,7 @@ public class ContractEnded extends AbstractEvent{
     private ContractStatus contractStatus;
 
     @Builder
-    public ContractEnded(Long contractId, Long memberId, String memberName, Long helperId, String helperName, String helperJobType, String targetName, String careRange, ContractStatus contractStatus) {
+    public ContractCompleted(Long contractId, Long memberId, String memberName, Long helperId, String helperName, String helperJobType, String targetName, String careRange, ContractStatus contractStatus) {
         super();
         this.contractId = contractId;
         this.memberId = memberId;

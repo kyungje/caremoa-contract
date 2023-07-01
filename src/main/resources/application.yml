@@ -14,7 +14,7 @@ spring:
 #    driver-class-name: org.h2.Driver
 
   datasource:
-    url: jdbc:mysql://13.125.214.14/caremoa_contract
+    url: jdbc:mysql://ec2-3-39-223-154.ap-northeast-2.compute.amazonaws.com/caremoa_contract
     username: user2
     password: user2
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -45,13 +45,13 @@ spring:
         binder:
           #brokers: localhost:9091,localhost:9092,localhost:9093
           #zkNodes: localhost:2181,localhost:2182,localhost:2183
-          brokers: 13.125.214.14:9092
+          brokers: ec2-3-39-223-154.ap-northeast-2.compute.amazonaws.com:9092
       bindings:
         producer-out-0:
-          destination: contract
+          destination: caremoa-topic
           content-type: application/json
         consumer-in-0:
-          destination: contract
+          destination: caremoa-topic
           content-type: application/json
 #  kafka:
 #    consumer:
@@ -71,7 +71,7 @@ feign:
 
 prop:
   feign:
-    url: http://localhost:8081/payment
+    url: http://a4012beb6509f4d2e8bd8fb783d8229b-1946401046.ap-northeast-2.elb.amazonaws.com:8080/payment
 
 server:
   port: 8080

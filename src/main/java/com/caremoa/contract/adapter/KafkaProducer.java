@@ -12,7 +12,7 @@ public class KafkaProducer {
     private final StreamBridge streamBridge;
 
     public void sendMessage(AbstractEvent abstractEvent){
-        log.info("sendMessage: {}" , abstractEvent);
-        streamBridge.send("producer-out-0", abstractEvent);
+        log.info("sendMessage: {}" , abstractEvent.toJson());
+        streamBridge.send("producer-out-0", abstractEvent.toJson());
     }
 }
