@@ -76,6 +76,8 @@ prop:
 
 server:
   port: 8080
+  servlet:
+    contextPath: /contract
 
 # logging 설정
 logging:
