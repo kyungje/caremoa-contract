@@ -71,7 +71,8 @@ feign:
 
 prop:
   feign:
-    url: http://a4012beb6509f4d2e8bd8fb783d8229b-1946401046.ap-northeast-2.elb.amazonaws.com:8080/payment
+#    url: http://a4012beb6509f4d2e8bd8fb783d8229b-1946401046.ap-northeast-2.elb.amazonaws.com:8080/payment
+    url: http://payment:8080/payment
 
 server:
   port: 8080
